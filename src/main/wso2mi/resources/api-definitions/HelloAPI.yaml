@@ -1,0 +1,25 @@
+openapi: 3.0.1
+info:
+  title: HelloAPI
+  description: API Definition of HelloAPI
+  version: 1.0.0
+servers:
+  - url: http://localhost:8290/hello
+  - url: https://localhost:8253/hello
+paths:
+  /{name}:
+    get:
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default response
+  /ping:
+    get:
+      responses:
+        default:
+          description: Default response
