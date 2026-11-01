@@ -46,3 +46,13 @@ mvnw.cmd
 ##############################
 *.log
 		target/
+mocks/target/
+mocks/.classpath
+mocks/.mvn/wrapper/maven-wrapper.properties
+mocks/.project
+mocks/.settings/org.eclipse.core.resources.prefs
+mocks/.settings/org.eclipse.jdt.apt.core.prefs
+mocks/.settings/org.eclipse.jdt.core.prefs
+mocks/.settings/org.eclipse.m2e.core.prefs
+mocks/.settings/org.springframework.ide.eclipse.prefs
+

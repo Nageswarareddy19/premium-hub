@@ -1,0 +1,14 @@
+services:
+  mocks-primary:
+    build: .
+    ports:
+      - "9001:9000"
+    environment:
+      MOCK_WEBHOOK_URL: http://host.docker.internal:8290/premium/1.0.0/webhooks/gateway
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mocks-backup:
+    build: .
+    ports:
+      - "9002:9000"
