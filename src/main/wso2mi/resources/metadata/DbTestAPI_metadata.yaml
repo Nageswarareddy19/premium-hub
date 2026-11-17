@@ -1,0 +1,10 @@
+---
+key: "DbTestAPI-1.0.0"
+name : "DbTestAPI"
+displayName : "DbTestAPI"
+description: "DbTestAPI"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/dbtest"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

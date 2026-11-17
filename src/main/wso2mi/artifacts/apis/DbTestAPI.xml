@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/dbtest" name="DbTestAPI" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/policies/{policyNumber}">
+        <inSequence>
+            <dblookup>
+                <connection>
+                    <pool>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5434/premium</url>
+                        <user>premium</user>
+                        <password>premium_pw</password>
+                        <property name="maxactive" value="20"/>
+                        <property name="maxwait" value="10000"/>
+                        <property name="testonborrow" value="true"/>
+                        <property name="validationquery" value="SELECT 1"/>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql>SELECT holder_name, status, expiry_date FROM policies WHERE policy_number=?</sql>
+                    <parameter expression="$ctx:uri.var.policyNumber" type="VARCHAR"></parameter>
+                    <result name="holderName" column="holder_name"/>
+                    <result name="status" column="status"/>
+                    <result name="expiryDate" column="expiry_date"/>
+                </statement>
+            </dblookup>
+            <filter source="get-property('holderName')" regex=".+">
+                <then>
+                    <payloadFactory media-type="json">
+                        <format>
+                            {
+                            "policyNumber": "$1",
+                            "holderName":"$2",
+                            "status":"$3",
+                            "expiryDate": "$4"
+                            }
+                        </format>
+                        <args>
+                            <arg evaluator="xml" expression="$ctx:uri.var.policyNumber"/>
+                            <arg evaluator="xml" expression="$ctx:holderName"/>
+                            <arg evaluator="xml" expression="$ctx:status"/>
+                            <arg evaluator="xml" expression="$ctx:expiryDate"/>
+                        </args>
+                    </payloadFactory>
+                </then>
+                <else>
+                    <property name="HTTP_SC" value="404" scope="axis2"/>
+                    <payloadFactory media-type="json">
+                        <format>
+                            {
+                            "code" :"policy_not_found"
+                            }
+                        </format>
+                    </payloadFactory>
+                </else>
+            </filter>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+</api>
