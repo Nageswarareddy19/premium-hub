@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/premium" name="PremiumAPI" version="1.0.0" version-type="url" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/policies/{policyNumber}/status">
+        <inSequence>
+            <call>
+                <endpoint key="PolicyGetEP"/>
+            </call>
+            <switch source="get-property('axis2','HTTP_SC')">
+                <case regex="200">
+                    <payloadFactory media-type="json">
+                        <format>
+                            {
+                            "policyNumber" : "$1",
+                            "status" :"$2",
+                            "expiryDate":"$3",
+                            "lastPayment" :null
+                            }
+                        </format>
+                        <args>
+                            <arg evaluator="json" expression="$.policyNumber"/>
+                            <arg evaluator="json" expression="$.status"/>
+                            <arg evaluator="json" expression="$.expiryDate"/>
+                        </args>
+                    </payloadFactory>
+                </case>
+                <case regex="404">
+                    <property name="HTTP_SC" value="404" scope="axis2"/>
+                    <payloadFactory media-type="json">
+                        <format>
+                            {
+                            "code" : "POLICY_NOT_FOUND",
+                            "message": "policy $1 was not found"
+                            }
+                        </format>
+                        <args>
+                            <arg evaluator="xml" expression="$ctx:uri.var.policyNumber"/>
+                        </args>
+                    </payloadFactory>
+                </case>
+                <default>
+                    <log level="custom">
+                        <property name="policyBackendStatus" expression="get-property('axis2','HTTP_SC')"/>
+                    </log>
+                    <property name="HTTP_SC" value="503" scope="axis2"/>
+                    <payloadFactory media-type="json">
+                        <format>
+                            {
+                            "code" :"POLICY_SYSTEM_UNAVAILABLE"
+                            }
+                        </format>
+                        <args/>
+                    </payloadFactory>
+                </default>
+            </switch>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <log level="custom">
+                <property name="faultCode" expression="get-property('ERROR_CODE')"/>
+                <property name="faultMessage" expression="get-property('ERROR_MESSAGE')"/>
+            </log>
+             <property name="HTTP_SC" value="502" scope="axis2"/>
+            <payloadFactory media-type="json">
+                <format>
+                    {
+                    "code" : "POLICY_SYSTEM_ERROR"
+                    }
+                </format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+</api>

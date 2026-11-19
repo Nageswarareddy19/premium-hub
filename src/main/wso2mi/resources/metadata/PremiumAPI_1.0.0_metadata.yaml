@@ -1,0 +1,10 @@
+---
+key: "PremiumAPI-1.0.0"
+name : "PremiumAPI"
+displayName : "PremiumAPI"
+description: "PremiumAPI"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/premium/1.0.0"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

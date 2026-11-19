@@ -1,0 +1,20 @@
+openapi: 3.0.1
+info:
+  title: PremiumAPI
+  description: API Definition of PremiumAPI
+  version: 1.0.0
+servers:
+  - url: http://localhost:8290/premium/1.0.0
+  - url: https://localhost:8253/premium/1.0.0
+paths:
+  /policies/{policyNumber}/status:
+    get:
+      parameters:
+        - name: policyNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default response
